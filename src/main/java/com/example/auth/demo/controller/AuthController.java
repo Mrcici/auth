@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.solr.common.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @Api(description = "登陆及刷新token")
+@Slf4j
 @RequestMapping("/api/v1")
 public class AuthController {
     @Value("${jwt.header}")
@@ -73,6 +75,8 @@ public class AuthController {
     @PostMapping(value = "/sign")
     @ApiOperation(value = "用户注册")
     public ResultJson sign(@RequestBody User user) {
+        log.info("user:" + user.getName());
+        log.info("password:" + user.getPassword());
         if (org.apache.commons.lang3.StringUtils.isAnyBlank(user.getName(), user.getPassword())) {
             return ResultJson.failure(ResultCode.BAD_REQUEST);
         }

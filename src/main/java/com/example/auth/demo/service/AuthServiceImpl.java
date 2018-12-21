@@ -8,6 +8,7 @@ import com.example.auth.demo.domain.auth.UserDetail;
 import com.example.auth.demo.exception.CustomException;
 import com.example.auth.demo.mapper.AuthMapper;
 import com.example.auth.demo.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ import java.util.Date;
  * createAt: 2018/9/17
  */
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
@@ -47,10 +49,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDetail register(UserDetail userDetail) {
+
+        log.info("进入用户创建方法");
         final String username = userDetail.getUsername();
         if(authMapper.findByUsername(username)!=null) {
             throw new CustomException(ResultJson.failure(ResultCode.BAD_REQUEST, "用户已存在"));
         }
+        //加密
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         final String rawPassword = userDetail.getPassword();
         userDetail.setPassword(encoder.encode(rawPassword));
